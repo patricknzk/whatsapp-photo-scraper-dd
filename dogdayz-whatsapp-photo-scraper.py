@@ -29,7 +29,7 @@ today_directory = os.path.join(base_directory, f"Dog Photos {today_date}")
 os.makedirs(today_directory, exist_ok=True)
 
 # Helper: Generate a unique file name
-def get_unique_filename(folder_path, base_name, extension=".jpeg"):
+def get_unique_filename(folder_path, base_name, extension=".png"):
     counter = 1
     unique_name = base_name
     while os.path.exists(os.path.join(folder_path, unique_name + extension)):
@@ -178,7 +178,7 @@ for photo in new_photo_data:
 
     # Generate a unique file name for the photo
     sanitized_file_name = message_content.replace("/", "-").replace("\\", "-").strip()
-    unique_file_name = get_unique_filename(dog_folder, sanitized_file_name)
+    unique_file_name = get_unique_filename(dog_folder, sanitized_file_name, extension=".png")
     save_path = os.path.join(dog_folder, unique_file_name)
 
     if img_url.startswith("blob:"):
@@ -193,7 +193,7 @@ for photo in new_photo_data:
                     canvas.height = img.naturalHeight;
                     let ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    return canvas.toDataURL('image/jpeg').split(',')[1];
+                    return canvas.toDataURL('image/png').split(',')[1];
                 } catch (error) {
                     return null;
                 }
@@ -204,16 +204,6 @@ for photo in new_photo_data:
                 print(f"Blob image saved to {save_path}")
         except Exception as e:
             print(f"Error processing blob image: {e}")
-
-    elif img_url.startswith("https://"):
-        # Handle direct https URLs
-        try:
-            img_data = requests.get(img_url).content
-            with open(save_path, "wb") as file:
-                file.write(img_data)
-            print(f"Image saved to {save_path}")
-        except Exception as e:
-            print(f"Failed to download image from {img_url}: {e}")
 
 print("Download complete. Please check your desktop folder 'Silvan Dog Dayz Photos'. Window will close in 1 minute.")
 time.sleep(60)
